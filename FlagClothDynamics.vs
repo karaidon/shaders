@@ -25,20 +25,23 @@ vec2 modAmplitudeFactor = vec2(0.075, 0.075);
 vec2 vtxModOffset = vec2(1,1);
 vec2 rippleDensity = vec2(7,2);
 vec2 rippleSpeed = vec2(4,2);
-vec2 xyOffsetAmplitude = vec2(0.15, 0.1);
+vec2 xyOffsetAmplitude = vec2(0.3, 0.3);
+
+float mainWindAmplitude = 0.5;
+float mainWindSpeed = 0.5;
 
 void main()
 {
 	//Input mesh is a normalized 2d plane along the x-y axis
     vec3 vertex = modelPosition;
-	float xOffset = (vertex.x + vtxModOffset.x) * modAmplitudeFactor.x * sin(rippleDensity.x*vertex.x + rippleSpeed.x*time);
-	float yOffset = (vertex.x + vtxModOffset.y) * modAmplitudeFactor.y * sin(rippleDensity.y*vertex.y + rippleSpeed.y*time);
-	
+	float xOffset = (vertex.x + vtxModOffset.x) * modAmplitudeFactor.x * sin(rippleDensity.x*-vertex.x + rippleSpeed.x*time);
+	float yOffset = (vertex.x + vtxModOffset.y) * modAmplitudeFactor.y * sin(rippleDensity.y * vertex.y + rippleSpeed.y*time);
+	float mainOffset = (vertex.x + vtxModOffset.y) * mainWindAmplitude * sin(mainWindSpeed * time);
 	vertex.z = vertex.z 
 	+ xOffset
-	+ yOffset;
+	+ yOffset + mainOffset;
 	
-	vertex.x = vertex.x + xyOffsetAmplitude.x * yOffset;
+	vertex.x = vertex.x + xyOffsetAmplitude.x * yOffset + xyOffsetAmplitude.x * xOffset;
 	vertex.y = vertex.y + xyOffsetAmplitude.y * xOffset;
 	
 	vs_out.vertex = vertex;
